@@ -1,0 +1,52 @@
+# https://www.linuxuprising.com/2019/06/how-to-backup-google-photos-to-your.html
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sync
+  namespace: wallpaper
+spec:
+  schedule: "*/30 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          securityContext:
+            runAsGroup: 1001
+            runAsUser: 1001
+          volumes:
+          - name: secrets
+            emptyDir:
+              medium: Memory
+          - name: storage
+            nfs:
+              path: /mnt/scratch/farm/wallpaper
+              server: archive.local
+          initContainers:
+          - name: secretboi
+            image: arecker/secretboi:latest
+            volumeMounts:
+            - name: secrets
+              mountPath: /secrets
+            env:
+            - name: VAULT_ADDR
+              value: http://vault.local
+            - name: VAULT_ROLE
+              value: wallpaper
+            - name: ONLY_RUN_ONCE
+              value: "true"
+            - name: SECRET_client_secret.json
+              value: /wallpaper
+          containers:
+          - name: sync
+            image: arecker/wallpaper-sync:latest
+            args:
+            - "/storage"
+            - "--album Wallpaper"
+            - "--skip-video"
+            volumeMounts:
+            - name: secrets
+              mountPath: /config
+              readOnly: true
+            - name: storage
+              mountPath: /storage
