@@ -14,3 +14,4 @@ docker_build() {
 }
 
 docker_build "wallpaper-sync"
+docker_build "wallpaper-proxy"
