@@ -40,7 +40,7 @@ spec:
           - name: sync
             image: arecker/wallpaper-sync:latest
             command: [ "gphotos-sync" ]
-            args: ["--album", "Wallpaper",  "--skip-video",  "--secret", "/secrets/wallpaper.json", "--use-flat-path",  "/storage" ]
+            args: ["--album", "Wallpaper",  "--use-hardlinks", "--omit-album-date", "--skip-video",  "--secret", "/secrets/wallpaper.json", "--use-flat-path",  "/storage" ]
             volumeMounts:
             - name: secrets
               mountPath: /secrets
