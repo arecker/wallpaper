@@ -38,7 +38,7 @@ set_wallpaper() {
 	DISPLAY=":0" XAUTHORITY="$HOME/.Xauthority" XDG_RUNTIME_DIR=/run/user/$(id -u) pcmanfm --set-wallpaper "$1"
     elif is_mac; then
 	log "running macos commands"
-	osascript -e 'tell application "Finder" to set desktop picture to POSIX file "$1"'
+	osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"$1\""
     else
 	log "unkown, assuming linux/gnome commands"
 	gsettings set org.gnome.desktop.background picture-uri "file://$1"
@@ -51,7 +51,7 @@ mkdir -p "$WORKDIR"
 log "cleaning up last run"
 rm -f ${WORKDIR}/*.png
 
-FILENAME=$WORKDIR/$(timestamp).png
+FILENAME="$WORKDIR/$(timestamp).png"
 log "downloading image to $FILENAME"
 wget -q -O "$FILENAME" "$URL"
 
