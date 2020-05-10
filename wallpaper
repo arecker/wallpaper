@@ -2,11 +2,12 @@
 
 set -e
 
-SILENT=""
+SILENT="true"
 WORKDIR="$HOME/.wallpaper"
 URL="http://wallpaper.local"
 
 log() {
+    echo "$1" >> "$WORKDIR/last.log"
     if silent_not_set; then
 	echo "wallpaper: $1" 1>&2;
     fi
@@ -18,6 +19,14 @@ timestamp() {
 
 silent_not_set() {
     [[ -z "$SILENT" ]]
+}
+
+validate_reachable() {
+    if curl -s --head  --request GET "$URL" | grep "200 OK" > /dev/null; then
+	log "$URL is reachable"
+    else
+	log "$URL is not reachable, exiting..."
+    fi
 }
 
 is_raspbian() {
@@ -45,14 +54,19 @@ set_wallpaper() {
     fi
 }
 
+log "cleaning up log file"
+rm -f "${WORKDIR}/last.log"
+
+validate_reachable
+
 log "validating working directory"
 mkdir -p "$WORKDIR"
 
-log "cleaning up last run"
+log "removing last photo"
 rm -f ${WORKDIR}/*.png
 
 FILENAME="$WORKDIR/$(timestamp).png"
 log "downloading image to $FILENAME"
-wget -q -O "$FILENAME" "$URL"
+/usr/local/bin/wget -q -O "$FILENAME" "$URL"
 
 set_wallpaper "$FILENAME"
