@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+set -e
+
+SILENT=""
+WORKDIR="$HOME/.wallpaper"
+URL="http://wallpaper.local"
+
+log() {
+    if silent_not_set; then
+	echo "wallpaper: $1" 1>&2;
+    fi
+}
+
+timestamp() {
+  date +"%s"
+}
+
+silent_not_set() {
+    [[ -z "$SILENT" ]]
+}
+
+is_raspbian() {
+    [[ -f "/etc/os-release" ]] && [[ "$(grep -c "ID=raspbian" /etc/os-release)" != "0" ]]
+}
+
+last_downloaded() {
+    echo "$WORKDIR/last.png"
+}
+
+is_mac() {
+    [[ "$OSTYPE" == "darwin"* ]]
+}
+
+set_wallpaper() {
+    if is_raspbian; then
+	log "running raspbian commands"
+	DISPLAY=":0" XAUTHORITY="$HOME/.Xauthority" XDG_RUNTIME_DIR=/run/user/$(id -u) pcmanfm --set-wallpaper "$1"
+    elif is_mac; then
+	log "running macos commands"
+	osascript -e 'tell application "Finder" to set desktop picture to POSIX file "$1"'
+    else
+	log "unkown, assuming linux/gnome commands"
+	gsettings set org.gnome.desktop.background picture-uri "file://$1"
+    fi
+}
+
+log "validating working directory"
+mkdir -p "$WORKDIR"
+
+log "cleaning up last run"
+rm -f ${WORKDIR}/*.png
+
+FILENAME=$WORKDIR/$(timestamp).png
+log "downloading image to $FILENAME"
+wget -q -O "$FILENAME" "$URL"
+
+set_wallpaper "$FILENAME"
