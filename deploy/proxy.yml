@@ -1,0 +1,50 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: proxy
+  namespace: wallpaper
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: proxy
+    spec:
+      volumes:
+        - name: storage
+          nfs:
+            path: /mnt/scratch/farm/wallpaper
+            server: archive.local
+      containers:
+      - name: proxy
+        image: arecker/wallpaper-proxy:latest
+        volumeMounts:
+        - name: storage
+          mountPath: /storage
+          readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy
+  namespace: wallpaper
+spec:
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    service: proxy
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: proxy
+  namespace: wallpaper
+spec:
+  rules:
+  - host: wallpaper.local
+    http:
+      paths:
+      - backend:
+          serviceName: proxy
+          servicePort: 80
