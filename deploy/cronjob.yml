@@ -12,15 +12,15 @@ spec:
           restartPolicy: Never
           securityContext:
             runAsGroup: 1001
-            runAsUser: 1001
+            runAsUser: 1026
           volumes:
           - name: secrets
             emptyDir:
               medium: Memory
           - name: storage
             nfs:
-              path: /mnt/scratch/farm/wallpaper
-              server: archive.local
+              path: /volume1/farm/wallpaper
+              server: nas.local
           initContainers:
           - name: secretboi
             image: arecker/secretboi:latest
