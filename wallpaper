@@ -9,7 +9,7 @@ URL="http://wallpaper.local"
 log() {
     echo "$1" >> "$WORKDIR/last.log"
     if silent_not_set; then
-	echo "wallpaper: $1" 1>&2;
+        echo "wallpaper: $1" 1>&2;
     fi
 }
 
@@ -23,9 +23,9 @@ silent_not_set() {
 
 validate_reachable() {
     if curl -s --head  --request GET "$URL" | grep "200 OK" > /dev/null; then
-	log "$URL is reachable"
+        log "$URL is reachable"
     else
-	log "$URL is not reachable, exiting..."
+        log "$URL is not reachable, exiting..."
     fi
 }
 
@@ -41,16 +41,25 @@ is_mac() {
     [[ "$OSTYPE" == "darwin"* ]]
 }
 
+is_xfce() {
+    [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]]
+}
+
 set_wallpaper() {
     if is_raspbian; then
-	log "running raspbian commands"
-	DISPLAY=":0" XAUTHORITY="$HOME/.Xauthority" XDG_RUNTIME_DIR=/run/user/$(id -u) pcmanfm --set-wallpaper "$1"
+        log "running raspbian commands"
+        DISPLAY=":0" XAUTHORITY="$HOME/.Xauthority" XDG_RUNTIME_DIR=/run/user/$(id -u) pcmanfm --set-wallpaper "$1"
     elif is_mac; then
-	log "running macos commands"
-	osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"$1\""
+        log "running macos commands"
+        osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"$1\""
+    elif is_xfce; then
+        xfconf-query \
+            --channel xfce4-desktop \
+            --property /backdrop/screen0/monitor0/workspace0/last-image \
+            --set "$1"
     else
-	log "unkown, assuming linux/gnome commands"
-	gsettings set org.gnome.desktop.background picture-uri "file://$1"
+        log "unkown, assuming linux/gnome commands"
+        gsettings set org.gnome.desktop.background picture-uri "file://$1"
     fi
 }
 
@@ -67,6 +76,6 @@ rm -f ${WORKDIR}/*.png
 
 FILENAME="$WORKDIR/$(timestamp).png"
 log "downloading image to $FILENAME"
-/usr/local/bin/wget -q -O "$FILENAME" "$URL"
+$(which wget) -q -O "$FILENAME" "$URL"
 
 set_wallpaper "$FILENAME"
