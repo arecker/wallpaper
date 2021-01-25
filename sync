@@ -2,6 +2,10 @@
 
 set -e
 
+SECRETS_PATH="$HOME/.wallpaper.json"
+
+echo "$CREDENTIALS" > "$SECRETS_PATH"
+
 gphotos-sync \
     --album "Wallpaper" \
     --use-hardlinks \
