@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+gphotos-sync \
+    --album "Wallpaper" \
+    --use-hardlinks \
+    --omit-album-date \
+    --skip-video \
+    --secret "$SECRETS_PATH" \
+    --use-flat-path \
+    "$STORAGE_PATH"

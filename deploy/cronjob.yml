@@ -29,7 +29,7 @@ spec:
               mountPath: /secrets
             env:
             - name: VAULT_ADDR
-              value: http://vault.local
+              value: http://vault.vault.svc.cluster:8200
             - name: VAULT_ROLE
               value: wallpaper
             - name: ONLY_RUN_ONCE
