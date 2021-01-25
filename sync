@@ -2,6 +2,8 @@
 
 set -e
 
+export $(cat $HOME/envs/wallpaper.env | xargs)
+
 SECRETS_PATH="$HOME/.wallpaper.json"
 
 echo "$CREDENTIALS" > "$SECRETS_PATH"
