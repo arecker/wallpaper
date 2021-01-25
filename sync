@@ -6,7 +6,7 @@ SECRETS_PATH="$HOME/.wallpaper.json"
 
 echo "$CREDENTIALS" > "$SECRETS_PATH"
 
-gphotos-sync \
+"$GPHOTOS_COMMAND_PATH" \
     --album "Wallpaper" \
     --use-hardlinks \
     --omit-album-date \
