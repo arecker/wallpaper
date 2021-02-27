@@ -45,6 +45,10 @@ is_xfce() {
     [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]]
 }
 
+is_void() {
+    cat /etc/os-release | grep -q 'NAME="void"'
+}
+
 set_wallpaper() {
     if is_raspbian; then
         log "running raspbian commands"
@@ -52,6 +56,8 @@ set_wallpaper() {
     elif is_mac; then
         log "running macos commands"
         osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"$1\""
+    elif is_void; then
+        feh --bg-max "$1"
     elif is_xfce; then
         log "running XFCE commands"
         xfconf-query \
