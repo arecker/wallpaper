@@ -24,7 +24,7 @@ log "using gphotos-sync at $(which gphotos-sync)"
     --use-hardlinks \
     --omit-album-date \
     --skip-video \
-    --secret "./secret.json" \
+    --secret "./secrets.json" \
     --use-flat-path \
     ./output
 
