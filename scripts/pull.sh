@@ -7,7 +7,7 @@ log() {
 
 log 'installing latest gphotos-sync'
 log "using pip at $(which pip)"
-pip install --upgrade gphotos-sync
+~/.pyenv/shims/pip install --upgrade gphotos-sync
 
 log 'validating that $WALLPAPER_SECRETS is set'
 if [[ -z "${WALLPAPER_SECRETS}" ]]; then
@@ -19,7 +19,7 @@ log "writing secret to secrets.json"
 echo "$WALLPAPER_SECRETS" > secrets.json
 
 log "using gphotos-sync at $(which gphotos-sync)"
-gphotos-sync \
+~/.local/bin/gphotos-sync \
     --album "Wallpaper" \
     --use-hardlinks \
     --omit-album-date \
