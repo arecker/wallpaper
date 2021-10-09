@@ -11,12 +11,15 @@ log "using pip at $(which pip)"
 
 log 'validating that $WALLPAPER_SECRETS is set'
 if [[ -z "${WALLPAPER_SECRETS}" ]]; then
-    log 'error!  $WALLPAPER_SECRETS" is not set!'
+    log 'error!  $WALLPAPER_SECRETS is not set!'
     exit 1
 fi
 
-log "writing secret to secrets.json"
-echo "$WALLPAPER_SECRETS" > secrets.json
+log 'validating that $WALLPAPER_SECRETS exists'
+if ! test -f "$WALLPAPER_SECRETS"; then
+    log 'error!  $WALLPAPER_SECRETS does not exist!'
+    exit 1
+fi
 
 log "using gphotos-sync at $(which gphotos-sync)"
 ~/.local/bin/gphotos-sync \
@@ -24,9 +27,6 @@ log "using gphotos-sync at $(which gphotos-sync)"
     --use-hardlinks \
     --omit-album-date \
     --skip-video \
-    --secret "./secrets.json" \
+    --secret "$WALLPAPER_SECRETS" \
     --use-flat-path \
     ./output
-
-log "cleaning up secrets.json"
-#rm secrets.json
