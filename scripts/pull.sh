@@ -29,4 +29,4 @@ log "using gphotos-sync at $(which gphotos-sync)"
     ./output
 
 log "cleaning up secrets.json"
-rm secrets.json
+#rm secrets.json
