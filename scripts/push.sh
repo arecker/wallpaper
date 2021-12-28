@@ -7,7 +7,7 @@ log() {
 DESTINATION="$1"
 
 use_sample() {
-    [[ -z "$SAMPLE" ]]
+    [[ -n "$SAMPLE" ]]
 }
 
 log 'validating that $DESTINATION is set'
