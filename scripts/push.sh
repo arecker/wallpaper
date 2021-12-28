@@ -30,4 +30,8 @@ else
 fi
 
 log "pushing photos in $SOURCE to $DESTINATION"
-rsync --delete -avzh "$SOURCE" "$DESTINATION"
+if use_sample; then
+    rsync --delete -avzh "$SOURCE" "$DESTINATION"
+else
+    rsync -avzh "$SOURCE" "$DESTINATION"
+fi
