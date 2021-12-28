@@ -5,6 +5,11 @@ log() {
 }
 
 DESTINATION="$1"
+SAMPLE="${SAMPLE:-false}"
+
+use_sample() {
+    [[ "$SAMPLE" != "false" ]]
+}
 
 log 'validating that $DESTINATION is set'
 if [[ -z "${DESTINATION}" ]]; then
@@ -18,5 +23,12 @@ if ! test -d output/albums/Wallpaper; then
     exit 1
 fi
 
-log "pushing photos to $DESTINATION"
-rsync -avzh output/albums/Wallpaper/ "$DESTINATION"
+if use_sample; then
+    SOURCE="output/albums/Wallpaper/"
+else
+    log 'SAMPLE set, using ./sample as source'
+    SOURCE="sample/"
+fi
+
+log "pushing photos in $SOURCE to $DESTINATION"
+rsync --delete -avzh "$SOURCE" "$DESTINATION"
