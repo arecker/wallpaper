@@ -5,10 +5,9 @@ log() {
 }
 
 DESTINATION="$1"
-SAMPLE="${SAMPLE:-false}"
 
 use_sample() {
-    [[ "$SAMPLE" != "false" ]]
+    [[ -z "$SAMPLE" ]]
 }
 
 log 'validating that $DESTINATION is set'
