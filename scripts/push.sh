@@ -23,10 +23,10 @@ if ! test -d output/albums/Wallpaper; then
 fi
 
 if use_sample; then
-    SOURCE="output/albums/Wallpaper/"
-else
     log 'SAMPLE set, using ./sample as source'
     SOURCE="sample/"
+else
+    SOURCE="output/albums/Wallpaper/"
 fi
 
 log "pushing photos in $SOURCE to $DESTINATION"
